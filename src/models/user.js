@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     required: false,
   },
   prefNews: {
-    type: String,
+    type: [String],
     required: false
   },
   expoToken: {
