@@ -11,11 +11,19 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: false,
   },
   prefLanguage: {
     type: String,
     required: false,
+  },
+  prefNews: {
+    type: String,
+    required: false
+  },
+  expoToken: {
+    type: String,
+    required: false
   },
   createdAt: {
     type: Date,
