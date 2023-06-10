@@ -129,10 +129,12 @@ async function getHomepageNewsMr() {
 // Handler for the /api/news route
 export default async function handler(req, res) {
 
-  const {name="", mobile="", prefNews=["General"], prefLanguage="english", lang = 'en' } = req?.query || {};
+  let {name="", mobile="", prefNews=["General"], prefLanguage="english", lang = 'en' } = req?.query || {};
+
+  prefLanguage = prefLanguage.toLowerCase();
 
   if(prefLanguage==="english"){
-    console.log(" inside english")
+    console.log(" Inside english")
     handleNewsEn(req, res);
   }else if(prefLanguage==="hindi"){
     handleNewsHi(req, res);
