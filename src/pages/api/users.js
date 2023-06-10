@@ -30,7 +30,7 @@ const saveUser = async (req, res) => {
     const user = await UserModel.findOne({ mobile });
 
     if (user) {
-      return res.status(400).json({ error: 'User already exist' });
+      return res.status(200).json({"message": "User already exists", data:user});
     } else {
       await UserModel.create({ mobile, name, email, prefLanguage, prefNews, expoToken });
       return res.status(200).json({ message: 'User created' });
