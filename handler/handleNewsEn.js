@@ -3,12 +3,6 @@ const { parse } = require('rss-to-json');
 import { connectDB } from '../src/db';
 import config from '../config';
 
-const cacheKeys = {
-  en: 'news-en',
-  hi: 'news-hi',
-  mr: 'news-mr',
-};
-
 // Define the schema for the cached response
 const cacheSchema = new mongoose.Schema({
   cacheKey: { type: String, required: true, unique: true },
@@ -107,7 +101,7 @@ async function getEntertainmentNews() {
 }
 
 async function getSportsNews() {
-  const apiRes = await fetch(`https://newsapi.org/v2/top-headlines?category=business&apiKey=${config.newsAPIKey}&pageSize=5&country=in`, {
+  const apiRes = await fetch(`https://newsapi.org/v2/top-headlines?category=sports&apiKey=${config.newsAPIKey}&pageSize=5&country=in`, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -133,6 +127,35 @@ async function getSportsNews() {
 
   return data
 }
+
+async function getTechnologyNews() {
+  const apiRes = await fetch(`https://newsapi.org/v2/top-headlines?category=technology&apiKey=${config.newsAPIKey}&pageSize=5&country=in`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const apiResJson = await apiRes.json();
+
+  const data = (apiResJson?.articles || []).map((news, i) => {
+    return {
+      key: i + 1,
+      author: news.author,
+      title: news?.title,
+      description: news.description,
+      content: news.content,
+      url: news.url,
+      urlToImage: news.urlToImage,
+      video: false,
+      time: (news?.publishedAt ? (new Date(news?.publishedAt)).toLocaleDateString() : ''),
+      sourceLink: news.url,
+      logo: news.urlToImage
+    }
+  });
+
+  return data
+}
+
 const createKey = (prefNews)=>{
   // CREATE KEY
   // CHECK FOR CACHE
@@ -151,6 +174,7 @@ const getDataFromAPI = async(prefNews)=>{
   if(prefNews.includes('Health')) newsPromises.push(getHealthNews());
   if(prefNews.includes('Entertainment')) newsPromises.push(getEntertainmentNews());
   if(prefNews.includes('Sports')) newsPromises.push(getSportsNews());
+  if(prefNews.includes('Technology')) newsPromises.push(getTechnologyNews());
 
   let promiseData = await Promise.all(newsPromises);
   let results = []
@@ -169,15 +193,15 @@ async function getHomepageNewsFromAPI() {
     getHealthNews(),
     getEntertainmentNews(),
     getSportsNews(),
-    getGeneralNews(),
+    getTechnologyNews(),
   ];
   let promiseData = await Promise.all(newsPromises);
   const data = {
     breaking: promiseData[0].slice(0,5),
     health: promiseData[1].slice(0,5),
     entertainment: promiseData[2].slice(0,5),
-    technology: promiseData[3].slice(0,5),
-    business: promiseData[4].slice(0,5),
+    sports: promiseData[3].slice(0,5),
+    technology: promiseData[4].slice(0,5),
   }
   return data
 }

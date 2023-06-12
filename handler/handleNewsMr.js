@@ -107,6 +107,28 @@ async function getSportsNews() {
   return data
 }
 
+async function getTechnologyNews() {
+
+  const apiResJson = await parse('https://marathi.abplive.com/news/technology/feed');
+  const data = (apiResJson?.items || []).map((news, i) => {
+    return {
+      key: i + 1,
+      author: news.author,
+      title: news?.title,
+      description: news.description,
+      content: news.description,
+      url: news.link,
+      urlToImage: news.media.thumbnail?.url,
+      video: false,
+      time: (news?.publishedAt ? (new Date(news?.publishedAt)).toLocaleDateString() : ''),
+      sourceLink: news?.link,
+      logo: news.media.thumbnail?.url
+    }
+  });
+
+  return data
+}
+
 const createKey = (prefNews)=>{
   // CREATE KEY
   let cacheKey = "Mr-"
@@ -124,6 +146,7 @@ const getDataFromAPI = async(prefNews)=>{
   if(prefNews.includes('Health')) newsPromises.push(getHealthNews());
   if(prefNews.includes('Entertainment')) newsPromises.push(getEntertainmentNews());
   if(prefNews.includes('Sports')) newsPromises.push(getSportsNews());
+  if(prefNews.includes('Technology')) newsPromises.push(getTechnologyNews());
 
   let promiseData = await Promise.all(newsPromises);
   let results = []
@@ -142,15 +165,15 @@ async function getHomepageNewsFromAPI() {
     getHealthNews(),
     getEntertainmentNews(),
     getSportsNews(),
-    getGeneralNews(),
+    getTechnologyNews(),
   ];
   let promiseData = await Promise.all(newsPromises);
   const data = {
     breaking: promiseData[0].slice(0,5),
     health: promiseData[1].slice(0,5),
     entertainment: promiseData[2].slice(0,5),
-    technology: promiseData[3].slice(0,5),
-    business: promiseData[4].slice(0,5),
+    sports: promiseData[3].slice(0,5),
+    technology: promiseData[4].slice(0,5),
   }
   return data
 }
