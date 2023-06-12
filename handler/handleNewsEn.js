@@ -173,11 +173,11 @@ async function getHomepageNewsFromAPI() {
   ];
   let promiseData = await Promise.all(newsPromises);
   const data = {
-    breaking: promiseData[0],
-    health: promiseData[1],
-    entertainment: promiseData[2],
-    technology: promiseData[3],
-    business: promiseData[4],
+    breaking: promiseData[0].slice(0,5),
+    health: promiseData[1].slice(0,5),
+    entertainment: promiseData[2].slice(0,5),
+    technology: promiseData[3].slice(0,5),
+    business: promiseData[4].slice(0,5),
   }
   return data
 }
@@ -204,7 +204,6 @@ export default async function handleNewsEn(req, res) {
      }else{
       response = await getDataFromAPI(prefNews);
      }
-     
 
      // UPDATE OR CREATE THE CACHE WITH NEW RESPONSE
      await CacheNewsHomepag.updateOne(
