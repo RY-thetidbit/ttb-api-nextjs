@@ -18,14 +18,15 @@ connectDB();
 
 async function getGeneralNews() {
 
-  const apiResJson = await parse('https://www.abplive.com/home/feed');
+  const apiResJson = await parse('https://www.prabhatkhabar.com/stories.rss');
+  console.log("test :", apiResJson)
 
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
       key: i + 1,
       author: news.author,
       title: news?.title,
-      description: news.description,
+      description: news.content,
       content: news.description,
       url: news.link,
       urlToImage: news.media.thumbnail?.url,
@@ -147,7 +148,8 @@ export default async function handleNewsEn(req, res) {
      const cachedData = await CacheNewsHomepag.findOne({ cacheKey });
 
     //  IF RESPONSE SEND CACHE DATA
-     if (cachedData && Date.now() - cachedData.timestamp < cacheExpiration) {
+    //  if (cachedData && Date.now() - cachedData.timestamp < cacheExpiration) {
+      if (false) {
        console.log('Returning cached response');
        return res.json({ data: cachedData.data });
      }

@@ -162,10 +162,30 @@ const getDataFromAPI = async(prefNews)=>{
   return results;
 }
 
-export default async function handleNewsEn(req, res) {
-  const { name = "", mobile = "", prefNews = ["General"] } = req?.query || {};
+async function getHomepageNewsFromAPI() {
 
-  const cacheKey = createKey(prefNews);
+  let newsPromises = [
+    getGeneralNews(),
+    getHealthNews(),
+    getEntertainmentNews(),
+    getSportsNews(),
+    getGeneralNews(),
+  ];
+  let promiseData = await Promise.all(newsPromises);
+  const data = {
+    breaking: promiseData[0],
+    health: promiseData[1],
+    entertainment: promiseData[2],
+    technology: promiseData[3],
+    business: promiseData[4],
+  }
+  return data
+}
+
+export default async function handleNewsEn(req, res) {
+  const { name = "", mobile = "", prefNews = ["General"], home=false } = req?.query || {};
+
+  const cacheKey = home?"En-Home":createKey(prefNews);
   const cacheExpiration = config.cacheExpiration; // 4 hours in milliseconds
 
   try{
@@ -177,8 +197,14 @@ export default async function handleNewsEn(req, res) {
        console.log('Returning cached response');
        return res.json({ data: cachedData.data });
      }
-
-     const response = await getDataFromAPI(prefNews);
+     
+     let response;
+     if(home){
+      response = await getHomepageNewsFromAPI(prefNews);
+     }else{
+      response = await getDataFromAPI(prefNews);
+     }
+     
 
      // UPDATE OR CREATE THE CACHE WITH NEW RESPONSE
      await CacheNewsHomepag.updateOne(
