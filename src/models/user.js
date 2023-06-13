@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  OSExternalUserId: {
+    type: String,
+    required: false
+  },
   createdAt: {
     type: Date,
     default: Date.now,

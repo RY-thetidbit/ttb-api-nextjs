@@ -44,7 +44,7 @@ const saveUser = async (req, res) => {
 const updateUser = async (req, res) => {
 
   try {
-    const { mobile, name, email, prefLanguage, prefNews, expoToken } = req?.body;
+    const { mobile, name, email, prefLanguage, prefNews, expoToken, OSExternalUserId } = req?.body;
     if (!mobile) return res.status(400).json({ error: "Please provide mobile number" });
 
     //CONNECT TO MONGODB DATABASE 
@@ -59,6 +59,7 @@ const updateUser = async (req, res) => {
       if (prefLanguage) user.prefLanguage = prefLanguage;
       if (prefNews) user.prefNews = prefNews;
       if (expoToken) user.expoToken = expoToken;
+      if(OSExternalUserId) user.OSExternalUserId = OSExternalUserId;
 
       // UPDATE USER INFO IN DB
       await user.save();
