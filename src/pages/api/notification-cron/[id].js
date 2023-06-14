@@ -4,13 +4,11 @@ import sentOSNotification from "../../../../handler/handleOSPushNotificaiton";
 export default function handler(req, res) {
   
   let { id=0 } = req?.query || {};
-  id = isNaN(parseInt(id))?0:parseInt(id)
-
-  let date = new Date();
+  id = isNaN(parseInt(id))?0:parseInt(id);
 
   sentOSNotification(id);
 
-  return res.status(200).json({ name: 'success', data: id, date });
+  response.status(200).json({ success: true });
 }
 
 

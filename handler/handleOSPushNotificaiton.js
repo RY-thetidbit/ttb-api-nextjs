@@ -242,7 +242,6 @@ export default async function handleOSPushNotification(notiNo = 0) {
     if (cachedData && Date.now() - cachedData.timestamp < cacheExpiration) {
       return sendOSNotification(cachedData.data[notiNo])
       //  CALL THE OS-NOTIFICATION API
-      //  return res.json({ data: cachedData.data });
     }
 
     let response = await getDataFromAPI(prefNews);
@@ -252,7 +251,7 @@ export default async function handleOSPushNotification(notiNo = 0) {
   } catch (e) {
     console.error('Error fetching news:', e);
     console.log("notiNo****",notiNo)
-    return res.status(500).json({ error: 'Error fetching news' });
+    // return res.status(500).json({ error: 'Error fetching news' });
   }
 
 }
