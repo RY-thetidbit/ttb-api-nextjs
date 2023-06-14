@@ -4,6 +4,7 @@ import sentOSNotification from "../../../../handler/handleOSPushNotificaiton";
 export default function handler(req, res) {
   
   let { id=0 } = req?.query || {};
+  
   id = isNaN(parseInt(id))?0:parseInt(id);
 
   sentOSNotification(id);
