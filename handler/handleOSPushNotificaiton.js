@@ -188,8 +188,10 @@ const getDataFromAPI = async (prefNews) => {
   return results;
 }
 
-const sendOSNotification = (notiData) => {
+const sendOSNotification = async(notiData) => {
+  
   var axios = require('axios');
+
   var data = {
     "app_id": "e20037d9-067f-417f-b8f8-dc919bb0b6dd",
     "included_segments": ["Subscribed Users"],
@@ -217,7 +219,7 @@ const sendOSNotification = (notiData) => {
     data: data
   };
 
-  axios(config)
+  return await axios(config)
     .then(function (response) {
       console.log("***********************axios", JSON.stringify(response.data));
     })
@@ -240,17 +242,18 @@ export default async function handleOSPushNotification(notiNo = 0) {
 
     //  IF RESPONSE SEND CACHE DATA
     if (cachedData && Date.now() - cachedData.timestamp < cacheExpiration) {
-      return sendOSNotification(cachedData.data[notiNo])
+      return await sendOSNotification(cachedData.data[notiNo])
       //  CALL THE OS-NOTIFICATION API
     }
 
     let response = await getDataFromAPI(prefNews);
     //  CALL THE OS-NOTIFICATION API
-    return  sendOSNotification(response[notiNo])
+    return await  sendOSNotification(response[notiNo])
 
   } catch (e) {
     console.error('Error fetching news:', e);
     console.log("notiNo****",notiNo)
+    return
     // return res.status(500).json({ error: 'Error fetching news' });
   }
 
