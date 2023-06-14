@@ -16,7 +16,7 @@ const CacheNewsHomepag = mongoose.models.cachenewsbreaking || mongoose.model('ca
 // Connect to MongoDB
 connectDB();
 
-async function getGeneralNews() {
+async function getGeneralNewsBKPnewapi() {
   const apiRes = await fetch(`https://newsapi.org/v2/top-headlines?country=in&apiKey=${config.newsAPIKey}&pageSize=100&country=in`, {
     headers: {
       'Content-Type': 'application/json',
@@ -38,6 +38,29 @@ async function getGeneralNews() {
       time: (news?.publishedAt ? (new Date(news?.publishedAt)).toLocaleDateString() : ''),
       sourceLink: news.url,
       logo: news.urlToImage
+    }
+  });
+
+  return data
+}
+
+async function getGeneralNews() {
+
+  const apiResJson = await parse('https://www.news18.com/rss/latest.xml');
+
+  const data = (apiResJson?.items || []).map((news, i) => {
+    return {
+      key: i + 1,
+      author: news.author,
+      title: news?.title,
+      description: news.content,
+      content: news.description,
+      url: news.link,
+      urlToImage: news.media.thumbnail?.url,
+      video: false,
+      time: (news?.publishedAt ? (new Date(news?.publishedAt)).toLocaleDateString() : ''),
+      sourceLink: news?.link,
+      logo: news.media.thumbnail?.url
     }
   });
 
