@@ -134,7 +134,6 @@ export default async function handler(req, res) {
   prefLanguage = prefLanguage.toLowerCase();
 
   if(prefLanguage==="english"){
-    console.log(" Inside english")
     handleNewsEn(req, res);
   }else if(prefLanguage==="hindi"){
     handleNewsHi(req, res);

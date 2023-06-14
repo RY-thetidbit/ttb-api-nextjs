@@ -19,7 +19,6 @@ connectDB();
 async function getGeneralNews() {
 
   const apiResJson = await parse('https://www.prabhatkhabar.com/stories.rss');
-  console.log("test :", apiResJson)
 
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
@@ -130,30 +129,30 @@ async function getTechnologyNews() {
   return data
 }
 
-const createKey = (prefNews)=>{
+const createKey = (prefNews) => {
   // CREATE KEY
   // CHECK FOR CACHE
   let cacheKey = "Hi-"
-  cacheKey += `${prefNews.includes('General')?"General":""}`; // Key to identify the cached response
-  cacheKey += `${prefNews.includes('Health')?"Health":""}`;
-  cacheKey += `${prefNews.includes('Entertainment')?"Entertainment":""}`;
-  cacheKey += `${prefNews.includes('Sports')?"Sports":""}`;
+  cacheKey += `${prefNews.includes('General') ? "General" : ""}`; // Key to identify the cached response
+  cacheKey += `${prefNews.includes('Health') ? "Health" : ""}`;
+  cacheKey += `${prefNews.includes('Entertainment') ? "Entertainment" : ""}`;
+  cacheKey += `${prefNews.includes('Sports') ? "Sports" : ""}`;
 
   return cacheKey;
 }
 
-const getDataFromAPI = async(prefNews)=>{
+const getDataFromAPI = async (prefNews) => {
   let newsPromises = []
-  if(prefNews.includes('General')) newsPromises.push(getGeneralNews());
-  if(prefNews.includes('Health')) newsPromises.push(getHealthNews());
-  if(prefNews.includes('Entertainment')) newsPromises.push(getEntertainmentNews());
-  if(prefNews.includes('Sports')) newsPromises.push(getSportsNews());
-  if(prefNews.includes('Technology')) newsPromises.push(getTechnologyNews());
+  if (prefNews.includes('Health')) newsPromises.push(getHealthNews());
+  if (prefNews.includes('Entertainment')) newsPromises.push(getEntertainmentNews());
+  if (prefNews.includes('Sports')) newsPromises.push(getSportsNews());
+  if (prefNews.includes('Technology')) newsPromises.push(getTechnologyNews());
+  if (prefNews.includes('General')) newsPromises.push(getGeneralNews());
 
   let promiseData = await Promise.all(newsPromises);
   let results = []
 
-  promiseData.map(async(item)=>{
+  promiseData.map(async (item) => {
     results = [...results, ...item];
   })
 
@@ -171,51 +170,60 @@ async function getHomepageNewsFromAPI() {
   ];
   let promiseData = await Promise.all(newsPromises);
   const data = {
-    breaking: promiseData[0].slice(0,5),
-    health: promiseData[1].slice(0,5),
-    entertainment: promiseData[2].slice(0,5),
-    sports: promiseData[3].slice(0,5),
-    technology: promiseData[4].slice(0,5),
+    breaking: promiseData[0].slice(0, 5),
+    health: promiseData[1].slice(0, 5),
+    entertainment: promiseData[2].slice(0, 5),
+    sports: promiseData[3].slice(0, 5),
+    technology: promiseData[4].slice(0, 5),
   }
   return data
 }
 
 export default async function handleNewsEn(req, res) {
-  const { name = "", mobile = "", prefNews = ["General"], home=false } = req?.query || {};
-
-  const cacheKey = home?"Hi-Home":createKey(prefNews);
-  const cacheExpiration = config.cacheExpiration; // 4 hours in milliseconds
+  let { name = "", mobile = "", prefNews = ["General"], home = false } = req?.query || {};
 
   try{
-     // CHECK RESPONSE ALREADY EXIST NOT EXPIRE
-     const cachedData = await CacheNewsHomepag.findOne({ cacheKey });
+    prefNews = (typeof prefNews === 'string')?JSON.parse(prefNews):prefNews
+  }catch(e){}
+    
+    // ADD GENERAL AS DEFAULT IN PREFNEWS
+    if(!prefNews.includes("General")){
+      prefNews.push("General");
+    }
+
+  const cacheKey = home ? "Hi-Home" : createKey(prefNews);
+  const cacheExpiration = config.cacheExpiration; // 4 hours in milliseconds
+
+  try {
+    // CHECK RESPONSE ALREADY EXIST NOT EXPIRE
+    const cachedData = await CacheNewsHomepag.findOne({ cacheKey });
 
     //  IF RESPONSE SEND CACHE DATA
-     if (cachedData && Date.now() - cachedData.timestamp < cacheExpiration) {
-       console.log('Returning cached response');
-       return res.json({ data: cachedData.data });
-     }
+    if (cachedData && Date.now() - cachedData.timestamp < cacheExpiration) {
+      console.log('Returning cached response');
+      return res.json({ data: cachedData.data });
+    }
 
-     let response;
-     if(home){
+    let response;
+    if (home) {
       response = await getHomepageNewsFromAPI(prefNews);
-     }else{
+    } else {
       response = await getDataFromAPI(prefNews);
-     }
+    }
 
-     // UPDATE OR CREATE THE CACHE WITH NEW RESPONSE
-     await CacheNewsHomepag.updateOne(
-       { cacheKey },
-       { data: response, timestamp: Date.now() },
-       { upsert: true }
-     );
- 
-     // Return the response
-     return res.json({ data: response });
+    // UPDATE OR CREATE THE CACHE WITH NEW RESPONSE
+    await CacheNewsHomepag.updateOne(
+      { cacheKey },
+      { data: response, timestamp: Date.now() },
+      { upsert: true }
+    );
 
-  }catch(e){
+    // Return the response
+    return res.json({ data: response });
+
+  } catch (e) {
     console.error('Error fetching news:', error);
     return res.status(500).json({ error: 'Error fetching news' });
   }
-  
+
 }

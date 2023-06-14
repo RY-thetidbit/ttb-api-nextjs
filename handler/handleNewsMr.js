@@ -141,12 +141,12 @@ const createKey = (prefNews)=>{
 }
 
 const getDataFromAPI = async(prefNews)=>{
-  let newsPromises = []
-  if(prefNews.includes('General')) newsPromises.push(getGeneralNews());
+  let newsPromises = [];
   if(prefNews.includes('Health')) newsPromises.push(getHealthNews());
   if(prefNews.includes('Entertainment')) newsPromises.push(getEntertainmentNews());
   if(prefNews.includes('Sports')) newsPromises.push(getSportsNews());
   if(prefNews.includes('Technology')) newsPromises.push(getTechnologyNews());
+  if(prefNews.includes('General')) newsPromises.push(getGeneralNews());
 
   let promiseData = await Promise.all(newsPromises);
   let results = []
@@ -179,7 +179,16 @@ async function getHomepageNewsFromAPI() {
 }
 
 export default async function handleNewsEn(req, res) {
-  const { name = "", mobile = "", prefNews = ["General"], home=false } = req?.query || {};
+  let { name = "", mobile = "", prefNews = ["General"], home=false } = req?.query || {};
+
+  try{
+    prefNews = (typeof prefNews === 'string')?JSON.parse(prefNews):prefNews
+  }catch(e){}
+    
+    // ADD GENERAL AS DEFAULT IN PREFNEWS
+    if(!prefNews.includes("General")){
+      prefNews.push("General");
+    }
 
   const cacheKey = home?"En-Marathi":createKey(prefNews);
   const cacheExpiration = config.cacheExpiration; // 4 hours in milliseconds
