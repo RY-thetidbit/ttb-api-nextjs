@@ -182,18 +182,24 @@ export default async function handleNewsEn(req, res) {
   let { name = "", mobile = "", prefNews = ["General"], home=false } = req?.query || {};
 
   try{
-    prefNews = (typeof prefNews === 'string')?JSON.parse(prefNews):prefNews
-  }catch(e){}
     
-    // ADD GENERAL AS DEFAULT IN PREFNEWS
-    if(!prefNews.includes("General")){
-      prefNews.push("General");
+    try{
+      prefNews = (typeof prefNews === 'string') ? JSON.parse(prefNews) : prefNews;
+    }catch(e){
+      prefNews = ["General"];
     }
+    
+    if(!Array.isArray(prefNews)) prefNews = ["General"];
+
+  // ADD GENERAL AS DEFAULT IN PREFNEWS
+  if (!prefNews.includes("General")) {
+    prefNews.push("General");
+  }
 
   const cacheKey = home?"En-Marathi":createKey(prefNews);
   const cacheExpiration = config.cacheExpiration; // 4 hours in milliseconds
 
-  try{
+
      // CHECK RESPONSE ALREADY EXIST NOT EXPIRE
      const cachedData = await CacheNewsHomepag.findOne({ cacheKey });
 

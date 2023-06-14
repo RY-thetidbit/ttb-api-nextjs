@@ -232,19 +232,23 @@ async function getHomepageNewsFromAPI() {
 export default async function handleNewsEn(req, res) {
   let { name = "", mobile = "", prefNews = ["General"], home = false } = req?.query || {};
 
-try{
-  prefNews = (typeof prefNews === 'string')?JSON.parse(prefNews):prefNews
-}catch(e){}
-  
+  try {
+    try{
+      prefNews = (typeof prefNews === 'string') ? JSON.parse(prefNews) : prefNews;
+    }catch(e){
+      prefNews = ["General"];
+    }
+    
+    if(!Array.isArray(prefNews)) prefNews = ["General"];
+
   // ADD GENERAL AS DEFAULT IN PREFNEWS
-  if(!prefNews.includes("General")){
+  if (!prefNews.includes("General")) {
     prefNews.push("General");
   }
-
+  
   const cacheKey = home ? "En-Home" : createKey(prefNews);
   const cacheExpiration = config.cacheExpiration; // 4 hours in milliseconds
 
-  try {
     // CHECK RESPONSE ALREADY EXIST NOT EXPIRE
     const cachedData = await CacheNewsHomepag.findOne({ cacheKey });
 
@@ -272,7 +276,7 @@ try{
     return res.json({ data: response });
 
   } catch (e) {
-    console.error('Error fetching news:', error);
+    console.error('Error fetching news:', e);
     return res.status(500).json({ error: 'Error fetching news' });
   }
 
