@@ -31,9 +31,24 @@ let job6 = cron.schedule('50 30 15 * * *', () => {
   console.log("notifi job6********************")
 });
 
-let job7 = cron.schedule('50 15 12 * * *', () => {
-  sentOSNotification(6)
+let job7 = cron.schedule('50 55 17 * * *', () => {
+  sentOSNotification(0)
   console.log("notifi job7********************")
+});
+
+let job8 = cron.schedule('50 57 17 * * *', () => {
+  sentOSNotification(1)
+  console.log("notifi job8********************")
+});
+
+let job9 = cron.schedule('50 59 17 * * *', () => {
+  sentOSNotification(2)
+  console.log("notifi job9********************")
+});
+
+let job10 = cron.schedule('50 2 18 * * *', () => {
+  sentOSNotification(3)
+  console.log("notifi job10********************")
 });
 
 export default function handler(req, res) {
@@ -48,6 +63,9 @@ export default function handler(req, res) {
     job5.start()
     job6.start()
     job7.start()
+    job8.start()
+    job9.start()
+    job10.start()
   }
   if(command==='stop'){
     job1.stop()
@@ -57,6 +75,9 @@ export default function handler(req, res) {
     job5.stop()
     job6.stop()
     job7.stop()
+    job8.stop()
+    job9.stop()
+    job10.stop()
   }
   
   res.status(200).json({ name: 'success', date: date.toLocaleString() })
