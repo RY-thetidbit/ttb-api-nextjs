@@ -227,12 +227,14 @@ const sendOSNotification = (notiData) => {
 }
 
 export default async function handleOSPushNotification(notiNo = 0) {
-  const prefNews = ["General"];
+  let prefNews = ["General"];
+
+  try {
 
   const cacheKey = createKey(prefNews);
   const cacheExpiration = config.cacheExpiration; // 4 hours in milliseconds
 
-  try {
+
     // CHECK RESPONSE ALREADY EXIST NOT EXPIRE
     const cachedData = await CacheNewsHomepag.findOne({ cacheKey });
 
@@ -248,7 +250,8 @@ export default async function handleOSPushNotification(notiNo = 0) {
     return  sendOSNotification(response[notiNo])
 
   } catch (e) {
-    console.error('Error fetching news:', error);
+    console.error('Error fetching news:', e);
+    console.log("notiNo****",notiNo)
     return res.status(500).json({ error: 'Error fetching news' });
   }
 

@@ -227,7 +227,7 @@ export default async function handleNewsEn(req, res) {
     return res.json({ data: response });
 
   } catch (e) {
-    console.error('Error fetching news:', error);
+    console.error('Error fetching news:', e);
     return res.status(500).json({ error: 'Error fetching news' });
   }
 
