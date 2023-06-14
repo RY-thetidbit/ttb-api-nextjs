@@ -1,4 +1,4 @@
-var cron = require('node-cron');
+
 import sentOSNotification from "../../../../handler/handleOSPushNotificaiton";
 
 export default function handler(req, res) {
@@ -8,9 +8,5 @@ export default function handler(req, res) {
 
   sentOSNotification(id);
 
-  response.status(200).json({ success: true });
+  res.status(200).json({ success: true });
 }
-
-
-
-
