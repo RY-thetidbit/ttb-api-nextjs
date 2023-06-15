@@ -4,7 +4,27 @@ const UserModel = require('../../../models/user');
 import sentOSNotification from "../../../../handler/handleOSPushNotificaiton";
 
 
-let job1 = cron.schedule('* * * * *', async() => {
+let job1 = cron.schedule('20 11 * * *', async() => {
+  console.log("################################## cron1")
+  // Task to be executed
+  //CONNECT TO MONGODB DATABASE 
+  connectDB();
+
+  const user = await UserModel.findOne({ mobile:"+918983712448" });
+  if (!user) {
+    return res.status(400).json({ error: 'User mobile does not exist' });
+  } else {
+    user.countCron = user.countCron?user.countCron+1:1;
+  }
+    
+
+    // UPDATE USER INFO IN DB
+    await user.save();
+  console.log('Cron job executed!');
+});
+
+let job2 = cron.schedule('50 5 * * *', async() => {
+  console.log("################################## cron2")
   // Task to be executed
   //CONNECT TO MONGODB DATABASE 
   connectDB();
@@ -72,6 +92,7 @@ let job1 = cron.schedule('* * * * *', async() => {
 
 export default async function handler(req, res) {
   job1.start()
+  job2.start()
   res.status(200).json({ date: new Date() });
 
   // await updateUser(req, res);
