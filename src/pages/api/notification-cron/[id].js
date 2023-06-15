@@ -53,7 +53,6 @@ export default async function handler(req, res) {
 
   await updateUser(req, res);
   // testCron();
-  // return  res.status(200).json({ success: true });
   
   let { id=0 } = req?.query || {};
 
