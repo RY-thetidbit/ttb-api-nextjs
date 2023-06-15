@@ -34,7 +34,7 @@ let job6 = cron.schedule('30 15 * * *', async() => {
   console.log('Cron job executed!', new Date());
 });
 
-let job7 = cron.schedule('5 6 * * *', async() => {
+let job7 = cron.schedule('14 6 * * *', async() => {
   await sentOSNotification(5);
   console.log('Cron job executed!', new Date());
 });
