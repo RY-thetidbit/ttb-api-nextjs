@@ -4,7 +4,7 @@ const UserModel = require('../../../models/user');
 import sentOSNotification from "../../../../handler/handleOSPushNotificaiton";
 
 
-let job1 = cron.schedule('20 11 * * *', async() => {
+let job1 = cron.schedule('24 11 * * *', async() => {
   console.log("################################## cron1")
   // Task to be executed
   //CONNECT TO MONGODB DATABASE 
@@ -23,7 +23,7 @@ let job1 = cron.schedule('20 11 * * *', async() => {
   console.log('Cron job executed!');
 });
 
-let job2 = cron.schedule('50 5 * * *', async() => {
+let job2 = cron.schedule('54 5 * * *', async() => {
   console.log("################################## cron2")
   // Task to be executed
   //CONNECT TO MONGODB DATABASE 
