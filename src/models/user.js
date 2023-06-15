@@ -33,6 +33,16 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  count: {
+    type: Number,
+    required: false
+  },
+  countCron: {
+    type: Number,
+    required: false
+  },
+
+  
 });
 
 const UserModel = mongoose.model('User', userSchema);
