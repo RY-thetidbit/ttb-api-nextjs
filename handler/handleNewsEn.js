@@ -230,24 +230,24 @@ async function getHomepageNewsFromAPI() {
 }
 
 export default async function handleNewsEn(req, res) {
-  let { name = "", mobile = "", prefNews = ["General"], home = false } = req?.query || {};
-
   try {
-    try{
-      prefNews = (typeof prefNews === 'string') ? JSON.parse(prefNews) : prefNews;
-    }catch(e){
-      prefNews = ["General"];
-    }
-    
-    if(!Array.isArray(prefNews)) prefNews = ["General"];
+    let { name = "", mobile = "", prefNews = "General", home = false, newsType = "swapable" } = req?.query || {};
 
-  // ADD GENERAL AS DEFAULT IN PREFNEWS
-  if (!prefNews.includes("General")) {
-    prefNews.push("General");
-  }
-  
-  const cacheKey = home ? "En-Home" : createKey(prefNews);
-  const cacheExpiration = config.cacheExpiration; // 4 hours in milliseconds
+    // SET THE DEFAULT VALUE
+    if (!prefNews) prefNews = "General";
+    if (!newsType) newsType = "swapable";
+
+    // NEWS TYPE IS 1.SWAPABLE, 2.HOME, 3.SINGLE   AND PARSE THE VALUE
+    prefNews = (prefNews || "").split(",");
+    newsType = (newsType || "").toLowerCase();
+
+    // ADD GENERAL AS DEFAULT IN PREFNEWS IF NEWSTYPE IS SWAPABLE
+    if (!prefNews.includes("General") && newsType === 'swapable') {
+      prefNews.push("General");
+    }
+
+    const cacheKey = (newsType === 'home') ? "En-Home" : createKey(prefNews);
+    const cacheExpiration = config.cacheExpiration; // 4 hours in milliseconds
 
     // CHECK RESPONSE ALREADY EXIST NOT EXPIRE
     const cachedData = await CacheNewsHomepag.findOne({ cacheKey });
@@ -259,7 +259,7 @@ export default async function handleNewsEn(req, res) {
     }
 
     let response;
-    if (home) {
+    if ((newsType === 'home')) {
       response = await getHomepageNewsFromAPI(prefNews);
     } else {
       response = await getDataFromAPI(prefNews);
