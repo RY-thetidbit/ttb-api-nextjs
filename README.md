@@ -41,3 +41,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## API used NEWSAPI and GNEWAPI
 https://gnews.io/docs/v4#search-endpoint
+
+
+## HEAT API TO START NOTIFICATION CRON JOB 
+https://ttb-mw-cron-bea0659f56e6.herokuapp.com/api/notification-cron/1

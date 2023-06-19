@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 const { parse } = require('rss-to-json');
 import { connectDB } from '../src/db';
 import config from '../config';
+import {shuffleArray} from '../utils/index';
 
 // Define the schema for the cached response
 const cacheSchema = new mongoose.Schema({
@@ -26,6 +27,59 @@ async function getGeneralNews() {
       author: news.author,
       title: news?.title,
       description: news.description,
+      content: news.description,
+      url: news.link,
+      urlToImage: news.media.thumbnail?.url,
+      video: false,
+      time: (news?.publishedAt ? (new Date(news?.publishedAt)).toLocaleDateString() : ''),
+      sourceLink: news?.link,
+      logo: news.media.thumbnail?.url
+    }
+  });
+
+  return data
+}
+
+async function getMaharashtraNews() {
+
+  const apiResJson = await parse('https://marathi.abplive.com/news/maharashtra/feed');
+
+  const data = (apiResJson?.items || []).map((news, i) => {
+    return {
+      key: i + 1,
+      author: news.author,
+      title: news?.title,
+      description: news.description,
+      content: news.description,
+      url: news.link,
+      urlToImage: news.media.thumbnail?.url,
+      video: false,
+      time: (news?.publishedAt ? (new Date(news?.publishedAt)).toLocaleDateString() : ''),
+      sourceLink: news?.link,
+      logo: news.media.thumbnail?.url
+    }
+  });
+
+  return data
+}
+
+async function getUpBiharNews() {
+
+  const apiResJsonUP = await parse('https://timesofindia.indiatimes.com/rssfeeds/-2128819658.cms');
+
+  const apiResJsonBihar = await parse('https://timesofindia.indiatimes.com/rssfeeds/-2128817995.cms');
+  // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@apiResJsonUP",apiResJsonUP)
+  // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@apiResJsonBihar",apiResJsonBihar)
+
+  // let apiResJson = await Promise.all([apiResJsonUP, apiResJsonBihar]);
+  let apiResJson = [...apiResJsonBihar['items'],...apiResJsonBihar['items']]
+  apiResJson = shuffleArray(apiResJson);
+  const data = (apiResJson || []).map((news, i) => {
+    return {
+      key: i + 1,
+      author: news.author,
+      title: news?.title,
+      description: news.content,
       content: news.description,
       url: news.link,
       urlToImage: news.media.thumbnail?.url,
@@ -136,6 +190,8 @@ const createKey = (prefNews)=>{
   cacheKey += `${prefNews.includes('Health')?"Health":""}`;
   cacheKey += `${prefNews.includes('Entertainment')?"Entertainment":""}`;
   cacheKey += `${prefNews.includes('Sports')?"Sports":""}`;
+  cacheKey += `${prefNews.includes('UpBihar') ? "UpBihar" : ""}`;
+  cacheKey += `${prefNews.includes('Maharashtra') ? "Maharashtra" : ""}`;
 
   return cacheKey;
 }
@@ -146,6 +202,8 @@ const getDataFromAPI = async(prefNews)=>{
   if(prefNews.includes('Entertainment')) newsPromises.push(getEntertainmentNews());
   if(prefNews.includes('Sports')) newsPromises.push(getSportsNews());
   if(prefNews.includes('Technology')) newsPromises.push(getTechnologyNews());
+  if (prefNews.includes('UpBihar')) newsPromises.push(getUpBiharNews());
+  if(prefNews.includes('Maharashtra')) newsPromises.push(getMaharashtraNews());
   if(prefNews.includes('General')) newsPromises.push(getGeneralNews());
 
   let promiseData = await Promise.all(newsPromises);
