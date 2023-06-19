@@ -39,7 +39,7 @@ let job7 = cron.schedule('14 6 * * *', async() => {
   console.log('Cron job executed!', new Date());
 });
 
-export default async function handler(req, res) {
+async function handler1(req, res) {
   job1.start();
   job2.start();
   job3.start();
@@ -48,6 +48,17 @@ export default async function handler(req, res) {
   job6.start();
   job7.start();
 
+  res.status(200).json({ date: new Date() });
+  
+}
+
+export default async function handler(req, res) {
+  
+  let {notiNo=0 } = req?.query || {};
+
+  if(!notiNo) notiNo=0;
+
+  await sentOSNotification(notiNo);
   res.status(200).json({ date: new Date() });
   
 }
