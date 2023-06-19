@@ -197,14 +197,14 @@ const sendOSNotification = async(notiData) => {
     "included_segments": ["Subscribed Users"],
     // "include_external_user_ids":["8983712448"],
     "data": {
-      "url": `${notiData.url}`
+      "url": `${notiData?.url}`
     },
-    "big_picture": `${notiData.urlToImage}`,
+    "big_picture": `${notiData?.urlToImage}`,
     "headings": {
-      "en": `${notiData.title}`
+      "en": `${notiData?.title}`
     },
     "contents": {
-      "en": `${notiData.description}`
+      "en": `${notiData?.description}`
     }
   };
 
