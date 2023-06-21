@@ -194,19 +194,23 @@ const sendOSNotification = async(notiData) => {
 
   var data = {
     "app_id": "e20037d9-067f-417f-b8f8-dc919bb0b6dd",
-    "included_segments": ["Subscribed Users"],
-    // "include_external_user_ids":["8983712448"],
+    // "included_segments": ["Subscribed Users"],
+    // "include_external_user_ids":["+918983712448"],
     "data": {
       "url": `${notiData?.url}`
     },
     "big_picture": `${notiData?.urlToImage}`,
     "headings": {
       "en": `${notiData?.title}`
-    },
-    "contents": {
-      "en": `${notiData?.description}`
     }
   };
+
+  if(notiData && notiData.description){
+    data.contents = {
+      "en": `${notiData?.description}`
+    }
+  }
+
 
   var config = {
     method: 'post',
