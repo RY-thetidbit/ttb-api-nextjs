@@ -200,11 +200,11 @@ const sendOSNotification = async(notiData) => {
       "url": `${notiData?.url}`
     },
     "big_picture": `${notiData?.urlToImage}`,
-    "headings": {
-      "en": `${notiData?.title}`
-    },
+    // "headings": {
+    //   "en": `${notiData?.title}`,
+    // },
     "contents": {
-      "en": `${notiData?.description || notiData?.content}`
+      "en": `${notiData?.title || notiData?.content}`
     }
   };
 
