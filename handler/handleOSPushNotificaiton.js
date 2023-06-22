@@ -204,7 +204,7 @@ const sendOSNotification = async(notiData) => {
       "en": `${notiData?.title}`
     },
     "contents": {
-      "en": `${notiData?.description}`
+      "en": `${notiData?.description || notiData?.content}`
     }
   };
 
