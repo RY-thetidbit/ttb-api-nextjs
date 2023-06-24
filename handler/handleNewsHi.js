@@ -268,6 +268,7 @@ export default async function handleNewsHi(req, res) {
       response = await getHomepageNewsFromAPI(prefNews);
     } else {
       response = await getDataFromAPI(prefNews);
+      response = response.slice(0,config.maxNews);
     }
 
     // UPDATE OR CREATE THE CACHE WITH NEW RESPONSE

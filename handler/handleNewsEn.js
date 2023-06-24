@@ -323,6 +323,7 @@ export default async function handleNewsEn(req, res) {
     } else {
       
       response = await getDataFromAPI(prefNews);
+      response = response.slice(0,config.maxNews);
     }
 
     // UPDATE OR CREATE THE CACHE WITH NEW RESPONSE
