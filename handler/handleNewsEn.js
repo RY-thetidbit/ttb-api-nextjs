@@ -3,6 +3,7 @@ const { parse } = require('rss-to-json');
 import { connectDB } from '../src/db';
 import config from '../config';
 import {shuffleArray} from '../utils/index';
+import { v4 as uuidv4 } from 'uuid';
 
 // Define the schema for the cached response
 const cacheSchema = new mongoose.Schema({
@@ -28,7 +29,7 @@ async function getGeneralNewsBKPnewapi() {
 
   const data = (apiResJson?.articles || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -51,7 +52,7 @@ async function getGeneralNews() {
 
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.content,
@@ -81,7 +82,7 @@ async function getUpBiharNews() {
   apiResJson = shuffleArray(apiResJson);
   const data = (apiResJson || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.content,
@@ -104,7 +105,7 @@ async function getMaharashtraNews() {
 
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -132,7 +133,7 @@ async function getHealthNews() {
 
   const data = (apiResJson?.articles || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -160,7 +161,7 @@ async function getEntertainmentNews() {
 
   const data = (apiResJson?.articles || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -188,7 +189,7 @@ async function getSportsNews() {
 
   const data = (apiResJson?.articles || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -216,7 +217,7 @@ async function getTechnologyNews() {
 
   const data = (apiResJson?.articles || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,

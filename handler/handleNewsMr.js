@@ -3,6 +3,7 @@ const { parse } = require('rss-to-json');
 import { connectDB } from '../src/db';
 import config from '../config';
 import {shuffleArray} from '../utils/index';
+import { v4 as uuidv4 } from 'uuid';
 
 // Define the schema for the cached response
 const cacheSchema = new mongoose.Schema({
@@ -23,7 +24,7 @@ async function getGeneralNews() {
 
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -46,7 +47,7 @@ async function getMaharashtraNews() {
 
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -76,7 +77,7 @@ async function getUpBiharNews() {
   apiResJson = shuffleArray(apiResJson);
   const data = (apiResJson || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.content,
@@ -99,7 +100,7 @@ async function getHealthNews() {
 
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -122,7 +123,7 @@ async function getEntertainmentNews() {
 
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -144,7 +145,7 @@ async function getSportsNews() {
   const apiResJson = await parse('https://marathi.abplive.com/sports/cricket/feed');
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -166,7 +167,7 @@ async function getTechnologyNews() {
   const apiResJson = await parse('https://marathi.abplive.com/news/technology/feed');
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,

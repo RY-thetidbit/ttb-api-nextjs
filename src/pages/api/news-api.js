@@ -5,7 +5,7 @@ import config from '../../../config';
 import handleNewsEn from '../../../handler/handleNewsEn';
 import handleNewsHi from '../../../handler/handleNewsHi';
 import handleNewsMr from '../../../handler/handleNewsMr';
-
+import { v4 as uuidv4 } from 'uuid';
 // const cacheKeys = {
 //   en: 'news-en-general',
 //   en: 'news-en-health',
@@ -53,7 +53,7 @@ async function getHomepageNewsEn() {
 
   const data = (apiResJson?.articles || []).map((news, i) => {
     return {
-      key: i + 1,
+      kkey: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -76,7 +76,7 @@ async function getHomepageNewsHi() {
 
   const data = (apiResJson?.items || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,
@@ -104,7 +104,7 @@ async function getHomepageNewsMr() {
 
   const data = (apiResJson?.articles || []).map((news, i) => {
     return {
-      key: i + 1,
+      key: uuidv4(),
       author: news.author,
       title: news?.title,
       description: news.description,

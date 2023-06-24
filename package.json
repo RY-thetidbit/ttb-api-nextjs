@@ -12,6 +12,7 @@
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "cors": "^2.8.5",
+    "firebase-admin": "^11.9.0",
     "mongodb": "^5.5.0",
     "mongoose": "^7.2.0",
     "next": "13.4.3",
@@ -20,6 +21,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "rss-to-json": "^2.1.1",
-    "tailwindcss": "3.3.2"
+    "tailwindcss": "3.3.2",
+    "uuid": "^9.0.0"
   }
 }
